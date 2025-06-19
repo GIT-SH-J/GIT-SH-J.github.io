@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <title>라이프 캘린더 (인생달력)</title>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wg ht@700&family=Noto+Sans+KR:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    body {
+      font-family: 'Noto Sans KR', 'Montserrat', Arial, sans-serif;
+      background: linear-gradient(120deg, #f8fafc 0%, #e3e6f3 100%);
+      margin: 0; padding: 0;
+      min-height: 100vh;
+    }
+    h1 {
+      text-align: center;
+      font-family: 'Montserrat', 'Noto Sans KR', sans-serif;
+      font-size: 2.5em;
+      color: #374151;
+      margin-top: 48px;
+      margin-bottom: 10px;
+      letter-spacing: 2px;
+    }
+    .subtitle {
+      text-align: center;
+      color: #6d7b99;
+      font-size: 1.1em;
+      margin-bottom: 30px;
+      letter-spacing: 1px;
+    }
+    .calendar-card {
+      background: #fff;
+      border-radius: 24px;
+      box-shadow: 0 8px 32px rgba(60,80,180,0.08), 0 1.5px 4px rgba(0,0,0,0.04);
+      padding: 36px 28px 32px 28px;
+      max-width: 720px;
+      margin: 0 auto 40px auto;
+      position: relative;
+    }
+    .input-box {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 16px;
+      margin-bottom: 18px;
+      flex-wrap: wrap;
+    }
+    label {
+      color: #475569;
+      font-weight: 500;
+      font-size: 1em;
+    }
+    input[type="date"], input[type="number"] {
+      padding: 7px 12px;
+      border-radius: 7px;
+      border: 1.5px solid #cbd5e1;
+      font-size: 1em;
+      background: #f8fafc;
+      transition: border 0.2s;
+      margin-left: 5px;
+    }
+    input[type="date"]:focus, input[type="number"]:focus {
+      border: 1.5px solid #7c3aed;
+      outline: none;
+    }
+    .calendar-btns {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .main-btn {
+      background: linear-gradient(90deg, #7c3aed 0%, #38bdf8 100%);
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      font-family: 'Montserrat', 'Noto Sans KR', sans-serif;
+      font-size: 1.05em;
+      font-weight: 700;
+      padding: 11px 30px;
+      cursor: pointer;
+      box-shadow: 0 2px 8px rgba(124,58,237,0.10);
+      transition: background 0.18s, transform 0.12s;
+    }
+    .main-btn:hover {
+      background: linear-gradient(90deg, #38bdf8 0%, #7c3aed 100%);
+      transform: translateY(-2px) scale(1.03);
+    }
+    .arrow-btn {
+      background: #f1f5f9;
+      border: none;
+      border-radius: 50%;
+      width: 40px; height: 40px;
+      box-shadow: 0 1.5px 6px rgba(60,80,180,0.08);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background 0.18s, transform 0.12s;
+    }
+    .arrow-btn:hover {
+      background: #c7d2fe;
+      transform: scale(1.07) rotate(8deg);
+    }
+    .arrow-icon {
+      width: 20px; height: 20px;
+      fill: #7c3aed;
+    }
+    #info {
+      text-align: center;
+      margin-bottom: 18px;
+      font-size: 1.13em;
+      color: #4b5563;
+      letter-spacing: 0.5px;
+      font-family: 'Montserrat', 'Noto Sans KR', sans-serif;
+    }
+    #calendar-wrapper {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin-bottom: 12px;
+    }
+    .calendar-row {
+      display: flex;
+      align-items: center;
+      margin-bottom: 3px;
+    }
+    .age-label {
+      width: 44px;
+      text-align: right;
+      margin-right: 10px;
+      color: #64748b;
+      font-size: 14px;
+      font-family: 'Montserrat', 'Noto Sans KR', sans-serif;
+      font-weight: 600;
+    }
+    .weeks-row {
+      display: flex;
+    }
+    .week {
+      width: 11px; height: 11px; margin: 1px;
+      border-radius: 3px;
+      background: #e0e7ef;
+      display: inline-block;
+      transition: background 0.2s;
+      box-shadow: 0 0.5px 2px rgba(60,80,180,0.04);
+    }
+    .week.past { background: #7c3aed; }
+    .week.current { background: #38bdf8; }
+    .week.future { background: #e0e7ef; }
+    .week.after60 { background: #2563eb !important; }
+    .year-label {
+      width: 38px; margin-left: 10px;
+      color: #a5b4fc;
+      font-size: 13px;
+      font-family: 'Montserrat', 'Noto Sans KR', sans-serif;
+      font-weight: 600;
+    }
+    #legend {
+      text-align: center;
+      margin-top: 24px;
+      font-size: 1em;
+      color: #6d7b99;
+      font-family: 'Montserrat', 'Noto Sans KR', sans-serif;
+    }
+    .legend-box {
+      display: inline-block;
+      width: 16px; height: 16px;
+      border-radius: 3px;
+      vertical-align: middle;
+      margin-right: 6px;
+      margin-left: 12px;
+      box-shadow: 0 0.5px 2px rgba(60,80,180,0.05);
+    }
+    .legend-past { background: #7c3aed;}
+    .legend-current { background: #38bdf8;}
+    .legend-future { background: #e0e7ef; border: 1px solid #cbd5e1;}
+    .legend-after60 { background: #2563eb; }
+    /* 모달 스타일 */
+    .modal-bg {
+      display: none;
+      position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+      background: rgba(60,80,180,0.13);
+      z-index: 1000;
+      align-items: center; justify-content: center;
+      animation: fadeIn 0.2s;
+    }
+    .modal-bg.active { display: flex; }
+    @keyframes fadeIn { from { opacity: 0;} to { opacity: 1; } }
+    .modal-box {
+      background: #fff;
+      border-radius: 18px;
+      box-shadow: 0 8px 32px rgba(60,80,180,0.13);
+      padding: 36px 30px 28px 30px;
+      max-width: 370px;
+      text-align: center;
+      position: relative;
+      animation: popUp 0.2s;
+    }
+    @keyframes popUp { from { transform: scale(0.95); opacity: 0.7;} to { transform: scale(1); opacity: 1;} }
+    .modal-title {
+      font-size: 1.17em;
+      font-weight: bold;
+      margin-bottom: 14px;
+      color: #7c3aed;
+      letter-spacing: 0.5px;
+      font-family: 'Montserrat', 'Noto Sans KR', sans-serif;
+    }
+    .modal-close {
+      position: absolute;
+      top: 15px; right: 18px;
+      background: none;
+      border: none;
+      font-size: 1.3em;
+      color: #b0b8d1;
+      cursor: pointer;
+      transition: color 0.2s;
+    }
+    .modal-close:hover { color: #7c3aed; }
+  </style>
+</head>
+<body>
+  <h1>라이프 캘린더</h1>
+  <div class="subtitle">남은 주(week)를 한눈에 보며, 오늘을 더 소중하게</div>
+  <div class="calendar-card">
+    <div class="input-box">
+      <label>생년월일 <input type="date" id="birthdate" value="1990-01-01"></label>
+      <label>기대수명(년) <input type="number" id="lifespan" value="80" min="1" max="120"></label>
+      <div class="calendar-btns">
+        <button class="main-btn" onclick="drawCalendar()">달력 보기</button>
+        <button class="arrow-btn" onclick="openModal()" title="달력을 만든 이유">
+          <svg class="arrow-icon" viewBox="0 0 24 24">
+            <path d="M7 10l5 5 5-5H7z"/>
+          </svg>
+        </button>
+      </div>
+    </div>
+    <div id="info"></div>
+    <div id="calendar-wrapper"></div>
+    <div id="legend">
+      <span class="legend-box legend-past"></span>지나간 주
+      <span class="legend-box legend-current"></span>이번 주
+      <span class="legend-box legend-future"></span>남은 주
+      <span class="legend-box legend-after60"></span>60세 이후 주
+    </div>
+  </div>
+  <!-- 모달 -->
+  <div class="modal-bg" id="modal-bg" onclick="closeModal(event)">
+    <div class="modal-box" onclick="event.stopPropagation()">
+      <button class="modal-close" onclick="closeModal(event)">&times;</button>
+      <div class="modal-title">내가 이 달력을 만든 이유</div>
+      <div style="margin-top:10px; color:#474f6b; font-size:1.07em;">
+        남은 주(week)를 한눈에 보며<br>
+        <b style="color:#2563eb;">매주를 동기부여 있게, 의미 있게 살기 위해</b><br>
+        이 달력을 만들었습니다.<br><br>
+        시간의 소중함을 잊지 않고,<br>
+        오늘을 더 가치 있게 보내세요!
+      </div>
+    </div>
+  </div>
+  <script>
+    function drawCalendar() {
+      const wrapper = document.getElementById('calendar-wrapper');
+      const info = document.getElementById('info');
+      wrapper.innerHTML = '';
+      info.innerHTML = '';
+      const birthdate = new Date(document.getElementById('birthdate').value);
+      const lifespan = parseInt(document.getElementById('lifespan').value, 10);
+      const now = new Date();
+
+      // 현재 나이 계산
+      let age = now.getFullYear() - birthdate.getFullYear();
+      const hasHadBirthday =
+        now.getMonth() > birthdate.getMonth() ||
+        (now.getMonth() === birthdate.getMonth() && now.getDate() >= birthdate.getDate());
+      if (!hasHadBirthday) age--;
+
+      // 전체 주, 현재까지 지난 주, 60세까지 남은 주 계산
+      const totalWeeks = lifespan * 52;
+      const livedWeeks = Math.floor((now - birthdate) / (1000 * 60 * 60 * 24 * 7));
+      const currentWeek = livedWeeks;
+      const sixtyBirthday = new Date(birthdate);
+      sixtyBirthday.setFullYear(birthdate.getFullYear() + 60);
+      let weeksToSixty = Math.floor((sixtyBirthday - now) / (1000 * 60 * 60 * 24 * 7));
+      if (weeksToSixty < 0) weeksToSixty = 0;
+
+      info.innerHTML = `<b>현재 나이:</b> ${age}세 &nbsp; | &nbsp; <b>60세까지 남은 주:</b> ${weeksToSixty}주`;
+
+      for (let year = 0; year < lifespan; year++) {
+        const row = document.createElement('div');
+        row.className = 'calendar-row';
+
+        // 나이 라벨
+        const ageLabel = document.createElement('div');
+        ageLabel.className = 'age-label';
+        ageLabel.textContent = `${year}세`;
+        row.appendChild(ageLabel);
+
+        // 주(week)들
+        const weeksRow = document.createElement('div');
+        weeksRow.className = 'weeks-row';
+        for (let week = 0; week < 52; week++) {
+          const weekIndex = year * 52 + week;
+          let weekClass = 'week future';
+          if (weekIndex < currentWeek) weekClass = 'week past';
+          else if (weekIndex === currentWeek) weekClass = 'week current';
+
+          // 60세 이후는 별도 색상
+          if (year >= 60) {
+            weekClass += ' after60';
+          }
+
+          const weekDiv = document.createElement('div');
+          weekDiv.className = weekClass;
+          weeksRow.appendChild(weekDiv);
+        }
+        row.appendChild(weeksRow);
+
+        // 52주 라벨
+        const yearLabel = document.createElement('div');
+        yearLabel.className = 'year-label';
+        yearLabel.textContent = '52주';
+        row.appendChild(yearLabel);
+
+        wrapper.appendChild(row);
+      }
+    }
+
+    function openModal() {
+      document.getElementById('modal-bg').classList.add('active');
+    }
+    function closeModal(e) {
+      document.getElementById('modal-bg').classList.remove('active');
+    }
+    window.onload = drawCalendar;
+  </script>
+</body>
+</html>
