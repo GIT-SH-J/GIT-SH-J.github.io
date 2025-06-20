@@ -133,7 +133,7 @@
       font-size: 1em;
       cursor: pointer;
     }
-    /* 수정 폼 모달 스타일 */
+    /* 수정 폼  스타일 */
     .edit-modal {
       display: none;
       position: fixed;
@@ -176,8 +176,7 @@
   </style>
 </head>
 <body>
-   <script src="index.js"defer></script>
-  <h1> my web </h1>
+  <h1> My shortcuts </h1>
   <div class="web-list" id="webList">
     <div class="web-item">
       <button class="more-btn">&#8942;</button>
@@ -223,7 +222,7 @@
     <input type="url" id="siteIcon" placeholder="아이콘 이미지 URL (선택)"><br>
     <button onclick="addSite()">추가</button>
   </div>
-  <!-- 수정 모달 -->
+  <!-- 수정 -->
   <div class="edit-modal" id="editModal">
     <div class="edit-modal-content">
       <h3>바로가기 수정</h3>
@@ -332,7 +331,7 @@
       `;
       webList.appendChild(div);
 
-      // 새로 추가된 아이템에도 이벤트 부여
+      // 새로 추가된 아이템에도 이벤트 
       div.querySelector('.more-btn').addEventListener('click', function(e) {
         e.stopPropagation();
         closeAllMenus();
